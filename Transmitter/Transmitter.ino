@@ -4,35 +4,22 @@
 
 
 /*
-   left stick:
-   X-axis = D35 (throttle)
-   Y-axis = D34 (yaw)
-
-   right stick:
-   X-axis = D33 (pitch)
-   Y-axis = D32 (roll)
+Right stick:
+   X-axis = D32 (pitch)
+   Y-axis = D33 (roll)
 */
 
-#define ThrottlePIN 35
-#define YawPIN 34
-int Throttle = 0;
-int Yaw = 0;
 
-
-#define PitchPIN 33
-#define RollPIN 32
+#define PitchPIN 32
+#define RollPIN 33
 int Pitch = 0;
 int Roll = 0;
 
-#define LED 18
-
-uint8_t broadcastAddress[] =  {0xA0, 0xB7, 0x65, 0xDD, 0x2D, 0x50};
+uint8_t broadcastAddress[] =  {0x, 0x, 0x, 0x, 0x, 0x}; // Change to receivers mac
 esp_now_peer_info_t peerInfo;
 
 // Setting up what the signal would look like
 struct Signal {
-    byte throttle;
-    byte pitch;
     byte roll;
     byte yaw;
 };
@@ -45,11 +32,6 @@ void setup(){
 
     pinMode(PitchPIN, INPUT);
     pinMode(RollPIN, INPUT);
-
-    pinMode(ThrottlePIN, INPUT);
-    pinMode(YawPIN, INPUT);
-
-    pinMode(LED, OUTPUT);
 
     WiFi.mode(WIFI_STA);
 
@@ -74,7 +56,6 @@ void setup(){
 
     delay(1000);
 
-    digitalWrite(LED, HIGH);
     Serial.println("Setup complete...");
 }
 
@@ -83,18 +64,11 @@ void setup(){
 void loop(){
 	// map({pin}, {min_value}, {max_value}, 0, 255)
 
-	Throttle = analogRead(ThrottlePIN);
-	Throttle = map(Throttle, 0, 4095, 0, 180);
-
 	Roll = analogRead(RollPIN);
 	Roll = map(Roll, 0, 4095, 180, 0);
 
 	Pitch = analogRead(PitchPIN);
 	Pitch = map(Pitch, 0, 4095, 0, 180);
-
-	Yaw = analogRead(YawPIN);
-	Yaw = map(Yaw, 0, 4095, 0, 180);
-
 
 	// Reversing the pitch
 	// Pitch = 255 - Pitch;
@@ -107,16 +81,8 @@ void loop(){
 	Serial.print("Roll: ");
 	Serial.println(Roll);
 
-	Serial.print("Yaw: ");
-	Serial.println(Yaw);
-
-	Serial.print("Throttle: ");
-	Serial.println(Throttle);
-
-	data.throttle = Throttle;
 	data.pitch = Pitch;
 	data.roll = Roll;
-	data.yaw = Yaw;
 
 	esp_now_send(broadcastAddress, (uint8_t *) &data, sizeof(Signal));
 

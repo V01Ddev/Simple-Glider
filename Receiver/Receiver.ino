@@ -5,10 +5,9 @@
 
 
 /*
-   throttle = D5
-   pitch = D18
-   roll = D19
-   yaw = D21
+   pitch = D5
+   roll = D6
+   extra =D7
  */
 
 
