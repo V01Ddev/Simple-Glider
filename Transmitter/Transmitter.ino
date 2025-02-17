@@ -15,13 +15,14 @@ Right stick:
 int Pitch = 0;
 int Roll = 0;
 
-uint8_t broadcastAddress[] =  {0x, 0x, 0x, 0x, 0x, 0x}; // Change to receivers mac
+// 50:02:91:FF:DB:3A
+uint8_t broadcastAddress[] =  {0x50, 0x02, 0x91, 0xFF, 0xDB, 0x3A};
 esp_now_peer_info_t peerInfo;
 
 // Setting up what the signal would look like
 struct Signal {
+    byte pitch;
     byte roll;
-    byte yaw;
 };
 
 Signal data;

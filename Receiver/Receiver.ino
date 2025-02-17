@@ -1,31 +1,27 @@
-#include <SPI.h>
-#include "WiFi.h"
-#include <esp_now.h>
-#include <ESP32Servo.h>
+#include <espnow.h>
+#include <ESP8266WiFi.h>
+#include <Servo.h>
 
 
 /*
-   pitch = D5
-   roll = D6
-   extra =D7
+   pitch    = D5
+   roll     = D6
+   extra    = D7 undefined for now
  */
 
+# define PPin D5
+# define RPin D6
 
-int Throttle = 80;
+
 int Roll = 83;
 int Pitch = 80;
-int Yaw = 83;
 
 
-Servo Tservo; // Throttle
 Servo Pservo; // Pitch
 Servo Rservo; // Roll
-Servo Yservo; // Yaw
 
-int TPos = 0; // Throttle PWM output
 int PPos = 0; // Pitch PWM output
 int RPos = 0; // Roll PWM output
-int YPos = 0; // Yaw PWM output
 
 
 unsigned long now;
@@ -34,10 +30,8 @@ unsigned long NxtRcv;
 
 // Setting up what the signal would look like
 struct Signal {
-    byte throttle;
     byte pitch;
     byte roll;
-    byte yaw;
 };
 
 Signal data;
@@ -45,31 +39,21 @@ Signal data;
 
 // To run if signal is lost
 void DataReset(){
-    data.throttle = 90;
     data.pitch = 90;
     data.roll = 90;
-    data.yaw = 90;
 }
 
 
 
-void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
+void OnDataRecv(uint8_t *mac, uint8_t *incomingData, uint8_t len) {
 
     memcpy(&data, incomingData, sizeof(Signal));
 
-    Throttle = data.throttle;
     Pitch = data.pitch;
     Roll = data.roll;
-    Yaw = data.yaw;
 
     LastRec = millis() / 1000;
     NxtRcv = LastRec + 3;
-
-    Serial.print("Throttle: ");
-    Serial.println(data.throttle);
-
-    Serial.print("Yaw: ");
-    Serial.println(data.yaw);
 
     Serial.print("Pitch: ");
     Serial.println(data.pitch);
@@ -82,24 +66,25 @@ void OnDataRecv(const uint8_t * mac, const uint8_t *incomingData, int len) {
 
 void setup(){
 
-    Serial.begin(115200);
+    Serial.begin(9600);
 
     delay(500);
 
-    Tservo.attach(5);
-    Pservo.attach(18);
-    Rservo.attach(19);
-    Yservo.attach(21);
+    Pservo.attach(PPin);
+    Rservo.attach(RPin);
 
     DataReset();
 
     WiFi.mode(WIFI_STA);
+    WiFi.disconnect();
 
-    if (esp_now_init() != ESP_OK) {
+    if (esp_now_init() != 0) {
         Serial.println("Error initializing ESP-NOW...");
         return;
     }
 
+    // Sets role
+    esp_now_set_self_role(ESP_NOW_ROLE_SLAVE);
     // Does things on callback (when data is sent over)
     esp_now_register_recv_cb(OnDataRecv);
 }
@@ -115,13 +100,9 @@ void loop(){
         delay(500);
     }
 
-    TPos = data.throttle;  // pin D5 (PWM signal)
-    PPos = data.pitch;     // pin D18 (PWM signal)
-    RPos = data.roll;      // pin D19 (PWM signal)
-    YPos = data.yaw;       // pin D21 (PWM signal)
+    PPos = data.pitch;     // pin D5 (PWM signal)
+    RPos = data.roll;      // pin D6 (PWM signal)
 
-    Tservo.write(TPos);
     Pservo.write(PPos);
     Rservo.write(RPos);
-    Yservo.write(YPos);
 }
