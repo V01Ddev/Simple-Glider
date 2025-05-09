@@ -14,8 +14,4 @@ Using a ESP8266. The receiver will convert the received value to a PWM output fo
 ## Building the plane
 The 3D printed templates allow for the plan to easily traced on foam board that can then be cut out.
 
-Lengths, mm:
-- Fuselage: 510, 20 will be used to connect to cockpit
-- Wing:     600
-- spar:     660
-- cockpit:  100-130, depending on your electronics
+Check out the [build guide](./Glider/BuildGuide)
