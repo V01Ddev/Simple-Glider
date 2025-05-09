@@ -14,4 +14,4 @@ Using a ESP8266. The receiver will convert the received value to a PWM output fo
 ## Building the plane
 The 3D printed templates allow for the plan to easily traced on foam board that can then be cut out.
 
-Check out the [build guide](./Glider/BuildGuide)
+Check out the [build guide](./Glider/BuildGuide.md)
