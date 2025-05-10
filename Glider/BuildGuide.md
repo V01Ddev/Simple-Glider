@@ -11,7 +11,7 @@ The lengths of each template component:
     Fusalage:           43cm
     Cockpit:            13cm
     Horizontal Stab:    20cm
-    Vertical Stab:      18cm
+    Vertical Stab:      16cm
 ```
 
 You only need to print one of every template piece, any part that that doesn't have `Template` in their name are integrated into the plane. Here is the number of each.
