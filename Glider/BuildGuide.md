@@ -6,7 +6,7 @@ The lengths of each template component:
 
 ```
     Wing Total:         100cm (20cm, 40cm*2)
-    Fusalage:           45cm
+    Fusalage:           50cm
     Cockpit:            23cm
     Horizontal Stab:    20cm
     Vertical Stab:      16cm
